@@ -82,7 +82,7 @@ func (c *Client) Login(username string, pwd string) error {
 		return err
 	}
 	if loginResult.AccessToken != "" {
-		fmt.Printf("token is %s\n", loginResult.AccessToken)
+		// fmt.Printf("token is %s\n", loginResult.AccessToken)
 		c.Token = loginResult.AccessToken
 	} else {
 		log.Println("no token found")
