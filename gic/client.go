@@ -8,6 +8,7 @@ import (
 	"net/url"
 	"runtime"
 	"strings"
+	"errors"
 )
 
 var Version = "1.0.0"
@@ -45,7 +46,16 @@ func (c *Client) Init(baseUrl string, userAgent string) error {
 	return nil
 }
 
-// login method
+// login with token 
+func (c *Client) LoginWithToken(token string) error {
+	if token == "" {
+		return errors.New("token is empty")
+	}
+	c.Token =  token
+	return nil
+}
+
+// login with username and password
 func (c *Client) Login(username string, pwd string) error {
 	rel := &url.URL{Path: "/gic/v1/get_token/"}
 	u := c.BaseURL.ResolveReference(rel)
