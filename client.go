@@ -52,6 +52,7 @@ func (c *Client) LoginWithToken(token string) error {
 		return errors.New("token is empty")
 	}
 	c.Token =  token
+	c.UserAgent = DefaultUserAgent
 	return nil
 }
 
