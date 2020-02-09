@@ -121,7 +121,7 @@ func (c *Client) ListDataCenter() ([]DataCenterListData, error) {
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		log.Printf("failed to login with error: %+v\n", err)
+		log.Printf("failed to ListDataCenter with error: %+v\n", err)
 		return nil, err
 	}
 	defer resp.Body.Close()
@@ -129,7 +129,7 @@ func (c *Client) ListDataCenter() ([]DataCenterListData, error) {
 	err = dec.Decode(&dataCenterData)
 	// err = json.NewDecoder(resp.Body).Decode(&dataCenterData)
 	if err != nil {
-		log.Printf("failed to parse list datacenter result with error: %+v\n", err)
+		log.Printf("failed to parse ListDataCenter result with error: %+v\n", err)
 		return nil, err
 	}
 	dataCenterListData = dataCenterData.Data
@@ -159,17 +159,50 @@ func (c *Client) InfoDataCenter(datacenterID string) ([]DataCenterInfoData, erro
 
 	resp, err := c.httpClient.Do(req)
 	if err != nil {
-		log.Printf("failed to login with error: %+v\n", err)
+		log.Printf("failed to InfoDataCenter with error: %+v\n", err)
 		return dataCenterInfoDataList, err
 	}
 	defer resp.Body.Close()
 	dec := json.NewDecoder(resp.Body)
 	err = dec.Decode(&dataCenterInfo)
 	if err != nil {
-		log.Printf("failed to parse list datacenter result with error: %+v\n", err)
+		log.Printf("failed to parse InfoDataCenter result with error: %+v\n", err)
 		return dataCenterInfoDataList, err
 	}
 	dataCenterInfoDataList = dataCenterInfo.Data
 
 	return dataCenterInfoDataList, nil
+}
+
+// ListOS for list the available os
+func (c *Client) ListOS() ([]OSListData, error) {
+	var osListData []OSListData
+	var osList OSList
+	rel := &url.URL{Path: "gic/v1/os/list/"}
+	u := c.BaseURL.ResolveReference(rel)
+	req, err := http.NewRequest("GET", u.String(), nil)
+	if err != nil {
+		log.Printf("unable to new http request with error: %+v\n", err)
+		return nil, err
+	}
+	req.Header.Set("Accept", "application/json")
+	req.Header.Set("User-Agent", c.UserAgent)
+	req.Header.Set("token", c.Token)
+
+	resp, err := c.httpClient.Do(req)
+	if err != nil {
+		log.Printf("failed to list os with error: %+v\n", err)
+		return nil, err
+	}
+	defer resp.Body.Close()
+	dec := json.NewDecoder(resp.Body)
+	err = dec.Decode(&osList)
+	// err = json.NewDecoder(resp.Body).Decode(&dataCenterData)
+	if err != nil {
+		log.Printf("failed to parse list os result with error: %+v\n", err)
+		return nil, err
+	}
+	osListData = osList.Data
+
+	return osListData, nil
 }
